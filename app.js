@@ -22,17 +22,7 @@ app.get('/',(req, res) => {
 app.post('/create', (req, res) => {
     const formData = req.body
 
-    if(formData.todo.trim() == ''){
-
-        
-        fs.readFile('./data/todos.json', (err, data) => {
-            if (err) throw err
-
-            const todos = JSON.parse(data)
-
-            res.render('main', { error: true, todos: todos })
-        })
-    }   else{
+    if (formData.todo.trim() !== '') {
         fs.readFile('./data/todos.json', (err, data) => {
             if (err) throw err
 
@@ -54,11 +44,39 @@ app.post('/create', (req, res) => {
 
                     const todos = JSON.parse(data)
 
-                    res.render('main', { success: true, todos: todos })
+                    res.render('main', {success: true, todos: todos})
                 })
             })
         })
+    } else {
+
+
+        fs.readFile('./data/todos.json', (err, data) => {
+            if (err) throw err
+
+            const todos = JSON.parse(data)
+
+            res.render('main', {error: true, todos: todos})
+        })
     }
+})
+
+app.get('/:id/deleted', (req, res) => {
+    const id = req.params.id
+
+    fs.readFile('./data/todos.json', (err, data) => {
+        if (err) throw err
+
+        const todos = JSON.parse(data)
+
+        const filteredTodos = todos.filter(todo => todo.id !== id)
+
+        fs.writeFile('./data/todos.json', JSON.stringify(filteredTodos), (err) => {
+            if (err) throw err
+
+            res.render('main', { todos: filteredTodos, deleted: true })
+        })
+    })
 })
 
 app.get('/api/v1/todos', (req, res) => {

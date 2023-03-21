@@ -14,6 +14,6 @@ block content
                         a.done(href=`/${ todo.id }/update`) #{ todo.description }
                     else
                         a.undone(href=`/${ todo.id }/update`) #{ todo.description }
-                    a.delete(href=`/${ todo.id }/delete1`) Delete
+                    a.delete(href=`/${ todo.id }/deleted`) Delete
         else 
             p.todo Todo list is empty
