@@ -1,0 +1,19 @@
+extends layout.pug
+
+block content
+
+    form.form(action='/add' method='POST')
+        input.input(type='text' placeholder='Add your To Do task here' name='todo')
+        button.btn +
+    
+    ul.todos
+        if todos.length
+            each todo in todos
+                li.todo 
+                    if todo.done 
+                        a.done(href=`/${ todo.id }/update`) #{ todo.description }
+                    else
+                        a.undone(href=`/${ todo.id }/update`) #{ todo.description }
+                    a.delete(href=`/${ todo.id }/delete1`) Delete
+        else 
+            p.todo Todo list is empty
