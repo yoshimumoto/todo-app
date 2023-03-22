@@ -20,46 +20,39 @@ app.get('/',(req, res) => {
 })
 
 app.post('/create', (req, res) => {
-    const formData = req.body
+    const formData = req.body;
 
     if (formData.todo.trim() !== '') {
         fs.readFile('./data/tasks.json', (err, data) => {
-            if (err) throw err
+            if (err) throw err;
 
-            const todos = JSON.parse(data)
+            const todos = JSON.parse(data);
 
             const todo = {
                 id: id(),
                 description: formData.todo,
                 done: false
-            }
+            };
 
-            todos.push(todo)
+            todos.push(todo);
 
             fs.writeFile('./data/tasks.json', JSON.stringify(todos), (err) => {
-                if (err) throw err
+                if (err) throw err;
 
-                fs.readFile('./data/tasks.json', (err, data) => {
-                    if (err) throw err
+                res.redirect('/');
 
-                    const todos = JSON.parse(data)
-
-                    res.render('main', {success: true, todos: todos})
-                })
-            })
-        })
+            });
+        });
     } else {
-
-
         fs.readFile('./data/tasks.json', (err, data) => {
-            if (err) throw err
+            if (err) throw err;
 
-            const todos = JSON.parse(data)
+            const todos = JSON.parse(data);
 
-            res.render('main', {error: true, todos: todos})
-        })
+            res.render('main', { error: true, todos: todos });
+        });
     }
-})
+});
 
 app.get('/:id/update', (req, res) => {
     const id = req.params.id
@@ -80,28 +73,37 @@ app.get('/:id/update', (req, res) => {
         fs.writeFile('./data/tasks.json', JSON.stringify(todos), (err) => {
             if (err) throw err
 
-            res.render('main', { todos: todos })
+            res.redirect('/')
         })
     })
 })
 
 app.get('/:id/deleted', (req, res) => {
-    const id = req.params.id
+    const id = req.params.id;
 
     fs.readFile('./data/tasks.json', (err, data) => {
-        if (err) throw err
+        if (err) throw err;
 
-        const todos = JSON.parse(data)
+        const todos = JSON.parse(data);
 
-        const filteredTodos = todos.filter(todo => todo.id !== id)
+        const filteredTodos = todos.filter(todo => todo.id !== id);
 
         fs.writeFile('./data/tasks.json', JSON.stringify(filteredTodos), (err) => {
-            if (err) throw err
+            if (err) throw err;
 
-            res.render('main', { todos: filteredTodos, deleted: true })
-        })
-    })
-})
+            res.redirect('/');
+        });
+    });
+});
+
+app.get('/clear', (req, res) => {
+
+    fs.writeFile('./data/tasks.json', '[]', (err) => {
+        if (err) throw err;
+
+        res.redirect('/');
+    });
+});
 
 app.get('/api/v1/todos', (req, res) => {
     fs.readFile('./data/tasks.json', (err, data) => {

@@ -8,12 +8,15 @@ block content
         if success
             p.success Task created!
 
-        if delete1
-            p.delete1 Task deleted!
+        if deleted
+            if todos.length === 0
+                p.deleted All tasks deleted!
+            else
+                p.deleted Task deleted!
 
     form.form(action='/create' method='POST')
         input.input(type='text' placeholder='Type your task here' name='todo')
-        button.btn +
+        button.btn(class='fa-solid fa-plus')
     
     ul.todos
         if todos.length
@@ -23,6 +26,9 @@ block content
                         a.done(href=`/${ todo.id }/update`) #{ todo.description }
                     else
                         a.undone(href=`/${ todo.id }/update`) #{ todo.description }
-                    a.delete(href=`/${ todo.id }/deleted`) Delete
+                    a.delete(class="fa-sharp fa-solid fa-trash" href=`/${ todo.id }/deleted`)
         else 
             p.todo Todo list is empty
+    div.clearall
+        p.cleartext You have #{todos.length} pending tasks
+        a.delete.clear(href='/clear') Clear All Tasks
