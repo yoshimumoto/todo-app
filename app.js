@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }))
 
 
 app.get('/',(req, res) => {
-    fs.readFile('./data/todos.json', (err, data) => {
+    fs.readFile('./data/tasks.json', (err, data) => {
         if(err) throw err
 
         const todos = JSON.parse(data)
@@ -23,7 +23,7 @@ app.post('/create', (req, res) => {
     const formData = req.body
 
     if (formData.todo.trim() !== '') {
-        fs.readFile('./data/todos.json', (err, data) => {
+        fs.readFile('./data/tasks.json', (err, data) => {
             if (err) throw err
 
             const todos = JSON.parse(data)
@@ -36,10 +36,10 @@ app.post('/create', (req, res) => {
 
             todos.push(todo)
 
-            fs.writeFile('./data/todos.json', JSON.stringify(todos), (err) => {
+            fs.writeFile('./data/tasks.json', JSON.stringify(todos), (err) => {
                 if (err) throw err
 
-                fs.readFile('./data/todos.json', (err, data) => {
+                fs.readFile('./data/tasks.json', (err, data) => {
                     if (err) throw err
 
                     const todos = JSON.parse(data)
@@ -51,7 +51,7 @@ app.post('/create', (req, res) => {
     } else {
 
 
-        fs.readFile('./data/todos.json', (err, data) => {
+        fs.readFile('./data/tasks.json', (err, data) => {
             if (err) throw err
 
             const todos = JSON.parse(data)
@@ -61,17 +61,41 @@ app.post('/create', (req, res) => {
     }
 })
 
+app.get('/:id/update', (req, res) => {
+    const id = req.params.id
+
+    fs.readFile('./data/tasks.json', (err, data) => {
+        if (err) throw err
+
+        const todos = JSON.parse(data)
+        const todo = todos.filter(todo => todo.id === id)[0]
+
+        const todoIdx = todos.indexOf(todo)
+        const splicedTodo = todos.splice(todoIdx, 1)[0]
+
+        splicedTodo.done = true
+
+        todos.push(splicedTodo)
+
+        fs.writeFile('./data/tasks.json', JSON.stringify(todos), (err) => {
+            if (err) throw err
+
+            res.render('main', { todos: todos })
+        })
+    })
+})
+
 app.get('/:id/deleted', (req, res) => {
     const id = req.params.id
 
-    fs.readFile('./data/todos.json', (err, data) => {
+    fs.readFile('./data/tasks.json', (err, data) => {
         if (err) throw err
 
         const todos = JSON.parse(data)
 
         const filteredTodos = todos.filter(todo => todo.id !== id)
 
-        fs.writeFile('./data/todos.json', JSON.stringify(filteredTodos), (err) => {
+        fs.writeFile('./data/tasks.json', JSON.stringify(filteredTodos), (err) => {
             if (err) throw err
 
             res.render('main', { todos: filteredTodos, deleted: true })
@@ -80,7 +104,7 @@ app.get('/:id/deleted', (req, res) => {
 })
 
 app.get('/api/v1/todos', (req, res) => {
-    fs.readFile('./data/todos.json', (err, data) => {
+    fs.readFile('./data/tasks.json', (err, data) => {
       if (err) throw err
   
       const todos = JSON.parse(data)

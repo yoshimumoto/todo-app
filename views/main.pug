@@ -1,9 +1,18 @@
 extends layout.pug
 
 block content
+    div.flex
+        if error
+            p.error Write something here!
+
+        if success
+            p.success Task created!
+
+        if delete1
+            p.delete1 Task deleted!
 
     form.form(action='/create' method='POST')
-        input.input(type='text' placeholder='Add your To Do task here' name='todo')
+        input.input(type='text' placeholder='Type your task here' name='todo')
         button.btn +
     
     ul.todos
