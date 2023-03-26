@@ -8,7 +8,7 @@ app.set('view engine', 'pug')
 app.use('/static', express.static('./public'))
 app.use(express.urlencoded({ extended: false }))
 
-
+// Route for the homepage
 app.get('/',(req, res) => {
     fs.readFile('./data/tasks.json', (err, data) => {
         if(err) throw err
@@ -16,9 +16,10 @@ app.get('/',(req, res) => {
         const todos = JSON.parse(data)
 
         res.render('main', { todos: todos })
-    }) 
+    })
 })
 
+// Route for creating a new task
 app.post('/create', (req, res) => {
     const formData = req.body;
 
@@ -54,6 +55,7 @@ app.post('/create', (req, res) => {
     }
 });
 
+// Route for marking a task as done
 app.get('/:id/update', (req, res) => {
     const id = req.params.id
 
@@ -78,6 +80,7 @@ app.get('/:id/update', (req, res) => {
     })
 })
 
+// Route for deleting a task
 app.get('/:id/deleted', (req, res) => {
     const id = req.params.id;
 
@@ -96,6 +99,7 @@ app.get('/:id/deleted', (req, res) => {
     });
 });
 
+// Route for clearing all tasks
 app.get('/clear', (req, res) => {
 
     fs.writeFile('./data/tasks.json', '[]', (err) => {
@@ -105,13 +109,14 @@ app.get('/clear', (req, res) => {
     });
 });
 
+// API endpoint for getting all tasks as JSON
 app.get('/api/v1/todos', (req, res) => {
     fs.readFile('./data/tasks.json', (err, data) => {
-      if (err) throw err
-  
-      const todos = JSON.parse(data)
-  
-      res.json(todos)
+        if (err) throw err
+
+        const todos = JSON.parse(data)
+
+        res.json(todos)
     })
 })
 
@@ -123,4 +128,4 @@ app.listen(PORT, (err) => {
 
 function id () {
     return '_' + Math.random().toString(36).substr(2, 9)
-  }
+}
