@@ -3,6 +3,10 @@
 This is a Node.js application for managing todo lists.
 
 ## Installation
+Clone the source code
+```
+git clone https://github.com/yoshimumoto/todo-app.git
+```
 
 To run this app locally, you'll need to have the following dependencies installed:
 
